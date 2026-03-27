@@ -1,0 +1,2 @@
+# Disease_Prediction_System_Using_MachineLearning_And_NLP.
+This project is a smart healthcare application that predicts possible diseases based on user-input symptoms using Machine Learning algorithms and Natural Language Processing (NLP). It analyzes textual input provided by users, processes it using NLP techniques, and applies trained models to identify patterns and predict the most likely disease. 
