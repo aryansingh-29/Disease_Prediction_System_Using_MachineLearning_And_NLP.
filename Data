@@ -1,0 +1,249 @@
+{
+  "symptom_synonyms": {
+    "high_fever": [
+      "high fever", "tez bukhar", "tez bukhaar", "bukhar", "bukhaar", "fever",
+      "burning up", "temperature", "high temperature", "running a fever", "pyrexia",
+      "jwar", "tap", "buxar", "buhkaar"
+    ],
+    "headache": [
+      "headache", "sar dard", "sir dard", "sar mein dard", "head pain",
+      "head is paining", "sir mein dard", "migraine", "throbbing head",
+      "sar dard ho raha hai", "head hurts", "cephalgia"
+    ],
+    "body_ache": [
+      "body ache", "badan dard", "badan mein dard", "body pain", "muscle pain",
+      "body is paining", "poora badan dard kar raha hai", "myalgia", "aching all over",
+      "sore body", "body mein dard", "full body pain"
+    ],
+    "nausea": [
+      "nausea", "ulti jaisi feeling", "ji ghbraana", "jee ghabraana", "queasy",
+      "feeling like vomiting", "motionsickness", "ubbkaaee", "ubkaai", "sick feeling"
+    ],
+    "vomiting": [
+      "vomiting", "ulti", "ulti ho rahi hai", "throwing up", "puking",
+      "emesis", "being sick", "retching"
+    ],
+    "fatigue": [
+      "fatigue", "thakan", "kamzori", "weakness", "tired", "exhaustion",
+      "bahut thak gaya", "lethargy", "no energy", "tiredness", "weak",
+      "kamzoor feel ho raha hai", "bohot thaka hua"
+    ],
+    "chills": [
+      "chills", "kaanpna", "kaapna", "thithurna", "shivers", "shivering",
+      "feeling cold", "jhunjhunahat"
+    ],
+    "cough": [
+      "cough", "khansi", "khansna", "dry cough", "coughing", "barking cough",
+      "khaasi", "sukhi khansi"
+    ],
+    "breathlessness": [
+      "breathlessness", "saans lene mein takleef", "dyspnea", "shortness of breath",
+      "difficulty breathing", "can't breathe properly", "saans phoolna",
+      "saans fulna", "short of breath", "laboured breathing"
+    ],
+    "diarrhea": [
+      "diarrhea", "loose motions", "dast", "loose stools", "runny stool",
+      "loose latrine", "watery stool", "frequent stool", "potty baar baar"
+    ],
+    "abdominal_pain": [
+      "abdominal pain", "pet dard", "stomach ache", "tummy ache",
+      "pet mein dard", "stomach pain", "belly pain", "gut pain",
+      "pet dard ho raha hai"
+    ],
+    "joint_pain": [
+      "joint pain", "jodo mein dard", "arthralgia", "joints hurting",
+      "joint ache", "knees hurting", "ghutne dard"
+    ],
+    "skin_rash": [
+      "rash", "skin rash", "daane", "daag", "chakte", "spots on skin",
+      "red spots", "hives", "eruption", "redness on skin"
+    ],
+    "loss_of_appetite": [
+      "loss of appetite", "bhook nahi lagti", "not feeling hungry",
+      "no appetite", "bhook nahi", "don't feel like eating", "anorexia"
+    ],
+    "sweating": [
+      "sweating", "pasina", "excessive sweating", "night sweats",
+      "raat ko pasina", "diaphoresis", "perspirating"
+    ],
+    "chest_pain": [
+      "chest pain", "seene mein dard", "chest tightness", "heart pain",
+      "chhati mein dard", "heaviness in chest", "angina"
+    ],
+    "sore_throat": [
+      "sore throat", "gale mein kharashat", "throat pain", "gala dard",
+      "throat ache", "gale mein dard", "pharyngitis"
+    ],
+    "runny_nose": [
+      "runny nose", "naak behna", "naak se paani aana", "nasal discharge",
+      "rhinorrhea", "naak mein paani"
+    ],
+    "sneezing": [
+      "sneezing", "chheenk", "aachoo", "sneezes a lot", "chheenkna"
+    ],
+    "weight_loss": [
+      "weight loss", "wajan kum hona", "thinning", "getting thinner",
+      "losing weight", "unexplained weight loss"
+    ],
+    "night_sweats": [
+      "night sweats", "raat ko pasina", "sweating at night", "nocturnal sweating"
+    ],
+    "loss_of_smell": [
+      "loss of smell", "soonghne ki shakti kho di", "anosmia", "can't smell",
+      "no sense of smell", "smell gone"
+    ],
+    "loss_of_taste": [
+      "loss of taste", "swad nahi aata", "ageusia", "can't taste",
+      "no sense of taste", "taste gone"
+    ],
+    "blurred_vision": [
+      "blurred vision", "dhundhla dikhna", "vision problem", "can't see clearly",
+      "eyes blurry", "ankhon se dhundhla"
+    ],
+    "dizziness": [
+      "dizziness", "chakkar", "vertigo", "chakkar aana", "feeling dizzy",
+      "lightheaded", "giddy", "chakkar aa raha hai"
+    ],
+    "itching": [
+      "itching", "khujli", "khaarish", "pruritus", "skin itching", "itchy"
+    ],
+    "swelling": [
+      "swelling", "sujan", "puffiness", "edema", "bloating", "swollen"
+    ],
+    "jaundice": [
+      "jaundice", "peeliya", "yellow skin", "yellowing of eyes",
+      "eyes turned yellow", "skin is yellow", "icterus"
+    ],
+    "pale_skin": [
+      "pale skin", "rangheenapan", "pallor", "skin looks pale", "whitish skin"
+    ],
+    "muscle_pain": [
+      "muscle pain", "muscles hurting", "muscular pain", "myalgia",
+      "body muscles ache", "maansapeshi dard"
+    ],
+    "frequent_urination": [
+      "frequent urination", "baar baar peshab", "urinating often",
+      "passing urine frequently", "polyuria"
+    ],
+    "increased_thirst": [
+      "increased thirst", "zyada pyaas", "excessive thirst", "polydipsia",
+      "always thirsty"
+    ],
+    "confusion": [
+      "confusion", "ghabrahat", "mental confusion", "disoriented",
+      "not thinking clearly", "bewilderment"
+    ],
+    "seizures": [
+      "seizures", "fits", "mirchhee", "convulsions", "epileptic fit",
+      "shaking uncontrollably"
+    ]
+  },
+  "urgency_levels": {
+    "red": ["Myocardial Infarction", "Stroke", "Meningitis", "Dengue Hemorrhagic Fever",
+            "Appendicitis", "Cholera"],
+    "yellow": ["Malaria", "Dengue Fever", "Typhoid", "Tuberculosis", "COVID-19",
+               "Pneumonia", "Leptospirosis", "Japanese Encephalitis", "Kala-Azar",
+               "Hepatitis A", "Hepatitis B", "Kidney Disease", "Liver Cirrhosis"],
+    "green": ["Common Cold", "Influenza", "Gastroenteritis", "Allergy", "Migraine",
+              "Urinary Tract Infection", "Asthma", "Bronchitis", "COPD", "Vertigo",
+              "Irritable Bowel Syndrome", "Peptic Ulcer", "Anemia", "Chickenpox",
+              "Chikungunya", "Diabetes", "Hypertension", "Hypothyroidism",
+              "Hyperthyroidism", "Eczema", "Psoriasis", "Epilepsy", "Jaundice"]
+  },
+  "disease_descriptions": {
+    "Malaria": "A mosquito-borne disease caused by Plasmodium parasites. Common in tropical regions of India. Treatable with antimalarial drugs.",
+    "Dengue Fever": "A viral infection spread by Aedes mosquitoes. Can range from mild to severe. Requires medical monitoring and supportive care.",
+    "Typhoid": "A bacterial infection caused by Salmonella typhi, spread through contaminated food and water. Requires antibiotic treatment.",
+    "Tuberculosis": "A bacterial lung disease caused by Mycobacterium tuberculosis. Highly treatable with a 6-month antibiotic course under DOTS programme.",
+    "COVID-19": "A viral respiratory illness caused by SARS-CoV-2. Symptoms range from mild to severe. Consult a doctor if breathlessness develops.",
+    "Chickenpox": "A highly contagious viral infection causing itchy blisters. Usually mild in children; can be severe in adults.",
+    "Pneumonia": "Infection causing inflammation in the lungs. Can be bacterial or viral. Requires medical treatment.",
+    "Hepatitis A": "A liver infection caused by the Hepatitis A virus, spread through contaminated food and water. Usually resolves on its own.",
+    "Hepatitis B": "A serious liver infection caused by the Hepatitis B virus. Can become chronic and lead to liver damage.",
+    "Cholera": "A severe bacterial infection causing profuse watery diarrhoea and dehydration. Requires immediate rehydration therapy.",
+    "Influenza": "A seasonal viral respiratory illness. Rest, fluids, and antiviral drugs help recovery.",
+    "Chikungunya": "A mosquito-borne viral disease causing severe joint pain. Supportive treatment relieves symptoms.",
+    "Diabetes": "A metabolic condition where the body cannot regulate blood sugar. Requires lifestyle changes and medication.",
+    "Hypertension": "Persistently high blood pressure. Often called the silent killer. Controlled with medication and lifestyle changes.",
+    "Hypothyroidism": "Underactive thyroid gland producing insufficient hormones. Managed with daily thyroid hormone replacement.",
+    "Hyperthyroidism": "Overactive thyroid gland. Treated with medications, radioactive iodine, or surgery.",
+    "Gastroenteritis": "Inflammation of the stomach and intestines, usually from infection. Rehydration and rest are key.",
+    "Jaundice": "Yellowing of skin and eyes due to excess bilirubin. Often a symptom of liver or bile duct problems.",
+    "Peptic Ulcer": "Sores in the lining of the stomach or small intestine. Treated with antacids and antibiotics.",
+    "Irritable Bowel Syndrome": "A chronic digestive disorder causing abdominal pain and altered bowel habits. Managed with diet and stress reduction.",
+    "Asthma": "A chronic respiratory condition causing airway inflammation and breathing difficulty. Inhalers provide relief.",
+    "COPD": "A chronic inflammatory lung disease causing obstructed airflow. Smoking is the primary cause. Requires ongoing management.",
+    "Bronchitis": "Inflammation of the bronchial tubes. Acute bronchitis usually resolves; chronic bronchitis requires ongoing care.",
+    "Migraine": "A neurological condition causing intense recurring headaches. Medication and lifestyle changes help.",
+    "Vertigo": "A sensation of dizziness and spinning. Often caused by inner ear problems. Usually treatable.",
+    "Epilepsy": "A neurological disorder causing recurrent seizures. Managed with anti-epileptic medications.",
+    "Common Cold": "A viral upper respiratory infection. Rest, fluids, and OTC remedies provide relief.",
+    "Urinary Tract Infection": "A bacterial infection of the urinary system. Treated with antibiotics.",
+    "Anemia": "Low haemoglobin levels in the blood. Treated with iron supplements or addressing the underlying cause.",
+    "Allergy": "An immune response to a harmless substance. Managed with antihistamines and avoiding triggers.",
+    "Dengue Hemorrhagic Fever": "A severe form of dengue causing bleeding and organ damage. Requires immediate hospitalisation.",
+    "Leptospirosis": "A bacterial infection spread through animal urine. Treatable with antibiotics.",
+    "Kala-Azar": "A parasitic disease transmitted by sandfly bites, common in Bihar, Jharkhand, and UP. Requires specialised treatment.",
+    "Japanese Encephalitis": "A viral brain infection spread by mosquitoes. Preventable by vaccination.",
+    "Myocardial Infarction": "A heart attack. Blockage of blood supply to the heart. CALL EMERGENCY SERVICES IMMEDIATELY.",
+    "Stroke": "A brain attack caused by blocked or ruptured blood vessels. CALL EMERGENCY SERVICES IMMEDIATELY.",
+    "Kidney Disease": "Reduced kidney function. Requires ongoing management to slow progression.",
+    "Liver Cirrhosis": "Scarring of the liver from long-term damage. Requires medical management.",
+    "Psoriasis": "A chronic skin condition causing red, scaly patches. Managed with topical and systemic treatments.",
+    "Eczema": "A condition causing inflamed, itchy skin. Managed with moisturisers and topical steroids.",
+    "Appendicitis": "Inflammation of the appendix requiring immediate surgical removal. SEEK EMERGENCY CARE.",
+    "Meningitis": "Inflammation of the brain and spinal cord membranes. SEEK EMERGENCY CARE IMMEDIATELY."
+  },
+  "government_resources": {
+    "ayushman_bharat": "14555",
+    "esanjeevani": "https://esanjeevani.mohfw.gov.in",
+    "icmr": "https://www.icmr.gov.in",
+    "nhp": "https://www.nhp.gov.in",
+    "emergency": "112",
+    "ambulance": "108"
+  }
+}
+
+disease,symptom_1,symptom_2,symptom_3,symptom_4,symptom_5,symptom_6,symptom_7,symptom_8,symptom_9,symptom_10,symptom_11,symptom_12,symptom_13,symptom_14,symptom_15
+Malaria,high_fever,chills,sweating,headache,body_ache,nausea,vomiting,fatigue,loss_of_appetite,joint_pain,shivering,pale_skin,,, 
+Dengue Fever,high_fever,severe_headache,pain_behind_eyes,joint_pain,muscle_pain,skin_rash,nausea,vomiting,fatigue,loss_of_appetite,bleeding_gums,easy_bruising,,,
+Typhoid,prolonged_fever,abdominal_pain,headache,loss_of_appetite,constipation,weakness,diarrhea,skin_rash,nausea,vomiting,fatigue,chills,,,
+Tuberculosis,persistent_cough,coughing_blood,weight_loss,night_sweats,fatigue,chest_pain,breathlessness,low_grade_fever,loss_of_appetite,weakness,,,,,
+COVID-19,fever,dry_cough,fatigue,loss_of_smell,loss_of_taste,breathlessness,headache,sore_throat,body_ache,diarrhea,chest_pain,,,, 
+Chickenpox,skin_rash,itching,fever,fatigue,headache,loss_of_appetite,fluid_filled_blisters,,,,,,,, 
+Pneumonia,high_fever,cough,breathlessness,chest_pain,chills,fatigue,sweating,nausea,vomiting,,,,,, 
+Hepatitis A,jaundice,dark_urine,nausea,vomiting,abdominal_pain,fatigue,loss_of_appetite,fever,joint_pain,,,,,, 
+Hepatitis B,jaundice,dark_urine,fatigue,abdominal_pain,nausea,vomiting,loss_of_appetite,joint_pain,,,,,,,
+Cholera,profuse_watery_diarrhea,vomiting,muscle_cramps,dehydration,weakness,nausea,rapid_heart_rate,,,,,,,, 
+Influenza,high_fever,headache,body_ache,fatigue,sore_throat,dry_cough,chills,loss_of_appetite,,,,,,,
+Chikungunya,high_fever,severe_joint_pain,muscle_pain,headache,skin_rash,fatigue,joint_swelling,nausea,,,,,,,
+Diabetes,increased_thirst,frequent_urination,fatigue,blurred_vision,slow_healing_wounds,frequent_infections,weight_loss,numbness_in_hands_feet,,,,,,,
+Hypertension,headache,dizziness,chest_pain,blurred_vision,nausea,shortness_of_breath,fatigue,,,,,,,, 
+Hypothyroidism,fatigue,weight_gain,cold_intolerance,dry_skin,hair_loss,constipation,depression,slow_heart_rate,muscle_weakness,,,,,, 
+Hyperthyroidism,weight_loss,rapid_heartbeat,sweating,anxiety,tremors,increased_appetite,diarrhea,fatigue,heat_intolerance,,,,,, 
+Gastroenteritis,diarrhea,vomiting,nausea,abdominal_cramps,fever,fatigue,loss_of_appetite,dehydration,,,,,,, 
+Jaundice,yellowing_of_skin,yellowing_of_eyes,dark_urine,pale_stools,fatigue,abdominal_pain,nausea,loss_of_appetite,,,,,,,
+Peptic Ulcer,abdominal_pain,nausea,vomiting,bloating,heartburn,loss_of_appetite,dark_stools,,,,,,,, 
+Irritable Bowel Syndrome,abdominal_pain,bloating,diarrhea,constipation,gas,mucus_in_stool,,,,,,,,,
+Asthma,wheezing,breathlessness,chest_tightness,cough,shortness_of_breath,,,,,,,,,, 
+COPD,chronic_cough,breathlessness,wheezing,chest_tightness,frequent_respiratory_infections,fatigue,,,,,,,,,
+Bronchitis,cough,mucus_production,fatigue,breathlessness,chest_discomfort,fever,,,,,,,,,
+Migraine,severe_headache,nausea,vomiting,sensitivity_to_light,sensitivity_to_sound,visual_disturbances,,,,,,,,,
+Vertigo,dizziness,loss_of_balance,nausea,vomiting,hearing_loss,ringing_in_ears,,,,,,,,,
+Epilepsy,seizures,confusion,loss_of_consciousness,muscle_stiffness,uncontrolled_movements,staring_spell,,,,,,,,,
+Common Cold,runny_nose,sneezing,sore_throat,cough,mild_fever,congestion,fatigue,,,,,,,, 
+Urinary Tract Infection,burning_urination,frequent_urination,cloudy_urine,strong_smelling_urine,pelvic_pain,fever,nausea,,,,,,,,
+Anemia,fatigue,weakness,pale_skin,shortness_of_breath,dizziness,headache,cold_hands_feet,,,,,,,, 
+Allergy,sneezing,runny_nose,itchy_eyes,skin_rash,hives,swelling,congestion,,,,,,,, 
+Dengue Hemorrhagic Fever,high_fever,severe_abdominal_pain,bleeding,vomiting,rapid_heartbeat,low_blood_pressure,skin_rash,,,,,,,, 
+Leptospirosis,high_fever,severe_headache,muscle_pain,red_eyes,jaundice,nausea,vomiting,rash,,,,,,, 
+Kala-Azar,prolonged_fever,splenomegaly,weight_loss,weakness,anemia,skin_darkening,,,,,,,,,
+Japanese Encephalitis,high_fever,headache,neck_stiffness,confusion,seizures,tremors,,,,,,,,,
+Myocardial Infarction,chest_pain,breathlessness,sweating,nausea,arm_pain,jaw_pain,fatigue,anxiety,,,,,,, 
+Stroke,sudden_numbness,confusion,trouble_speaking,vision_problems,severe_headache,loss_of_balance,,,,,,,,,
+Kidney Disease,swelling_in_legs,fatigue,decreased_urination,nausea,loss_of_appetite,shortness_of_breath,,,,,,,,,
+Liver Cirrhosis,jaundice,abdominal_swelling,fatigue,loss_of_appetite,nausea,easy_bruising,spider_veins,,,,,,,
+Psoriasis,red_skin_patches,scaly_skin,itching,dry_cracked_skin,joint_pain,,,,,,,,,,,
+Eczema,itching,red_rash,dry_skin,scaly_skin,skin_inflammation,,,,,,,,,,,
+Appendicitis,severe_abdominal_pain,nausea,vomiting,fever,loss_of_appetite,abdominal_rigidity,,,,,,,,,
+Meningitis,severe_headache,high_fever,neck_stiffness,sensitivity_to_light,nausea,vomiting,confusion,,,,,,,
