@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBDPS — Disease Encyclopedia & AI Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06080f;
+  --surface: #0c1020;
+  --card: #111827;
+  --card-hover: #161f35;
+  --border: rgba(148,163,184,0.1);
+  --border-hover: rgba(148,163,184,0.22);
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --subtle: #334155;
+  --infectious: #f97316;
+  --gastro: #eab308;
+  --respiratory: #3b82f6;
+  --metabolic: #10b981;
+  --neuro: #8b5cf6;
+  --cardio: #ef4444;
+  --infectious-bg: rgba(249,115,22,0.08);
+  --gastro-bg: rgba(234,179,8,0.08);
+  --respiratory-bg: rgba(59,130,246,0.08);
+  --metabolic-bg: rgba(16,185,129,0.08);
+  --neuro-bg: rgba(139,92,246,0.08);
+  --cardio-bg: rgba(239,68,68,0.08);
+  --accent: #38bdf8;
+  --accent-bg: rgba(56,189,248,0.08);
+  --urgent-emergency: #ef4444;
+  --urgent-clinic: #f59e0b;
+  --urgent-selfcare: #10b981;
+  --chat-width: 400px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 20% 0%,rgba(59,130,246,0.05) 0%,transparent 60%),
+             radial-gradient(ellipse 50% 40% at 80% 100%,rgba(139,92,246,0.04) 0%,transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(6,8,15,0.92);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;gap:1rem;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;flex-shrink:0}
+.nav-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:blink 2.5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.nav-right{display:flex;align-items:center;gap:1rem;flex-shrink:0}
+.nav-stats{display:flex;gap:1.5rem}
+.nav-stat{text-align:center}
+.nav-stat-val{font-family:'DM Mono',monospace;font-size:0.78rem;font-weight:500;color:var(--text)}
+.nav-stat-label{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+.chat-toggle-btn{
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.45rem 1rem;border-radius:8px;
+  background:var(--accent-bg);border:1px solid rgba(56,189,248,0.3);
+  color:var(--accent);font-family:'Sora',sans-serif;font-size:0.78rem;font-weight:500;
+  cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+.chat-toggle-btn:hover{background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.5)}
+.chat-toggle-btn .btn-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@media(max-width:600px){
+  .nav-stats{display:none}
+  .chat-toggle-btn span.btn-label{display:none}
+  .chat-toggle-btn{padding:0.45rem 0.7rem}
+}
+
+/* ── LAYOUT ── */
+.app-layout{display:flex;position:relative;z-index:1;min-height:calc(100vh - 60px)}
+.main-panel{flex:1;min-width:0;transition:margin-right 0.3s ease}
+@media(min-width:769px){
+  .main-panel.chat-open{margin-right:var(--chat-width)}
+}
+
+/* ── HERO ── */
+.hero{padding:3rem 1.5rem 2rem;max-width:1200px;margin:0 auto}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem}
+.hero-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--accent);opacity:0.4}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:700;line-height:1.05;letter-spacing:-0.02em;margin-bottom:1rem}
+.hero h1 em{font-style:italic;font-weight:400;color:#94a3b8}
+.hero-desc{color:var(--muted);font-size:0.9rem;max-width:520px;line-height:1.75}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:0.5rem;padding:0 1.5rem;max-width:1200px;margin:0 auto}
+.legend-item{display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.9rem;border-radius:100px;font-size:0.72rem;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all 0.18s;user-select:none}
+.legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.legend-item[data-cat="all"]{background:rgba(148,163,184,0.08);color:#94a3b8;border-color:rgba(148,163,184,0.2)}
+.legend-item[data-cat="all"].active{background:rgba(148,163,184,0.18);border-color:rgba(148,163,184,0.4)}
+.legend-item[data-cat="infectious"]{background:var(--infectious-bg);color:var(--infectious);border-color:rgba(249,115,22,0.25)}
+.legend-item[data-cat="infectious"].active{border-color:var(--infectious)}
+.legend-item[data-cat="gastro"]{background:var(--gastro-bg);color:var(--gastro);border-color:rgba(234,179,8,0.25)}
+.legend-item[data-cat="gastro"].active{border-color:var(--gastro)}
+.legend-item[data-cat="respiratory"]{background:var(--respiratory-bg);color:var(--respiratory);border-color:rgba(59,130,246,0.25)}
+.legend-item[data-cat="respiratory"].active{border-color:var(--respiratory)}
+.legend-item[data-cat="metabolic"]{background:var(--metabolic-bg);color:var(--metabolic);border-color:rgba(16,185,129,0.25)}
+.legend-item[data-cat="metabolic"].active{border-color:var(--metabolic)}
+.legend-item[data-cat="neuro"]{background:var(--neuro-bg);color:var(--neuro);border-color:rgba(139,92,246,0.25)}
+.legend-item[data-cat="neuro"].active{border-color:var(--neuro)}
+.legend-item[data-cat="cardio"]{background:var(--cardio-bg);color:var(--cardio);border-color:rgba(239,68,68,0.25)}
+.legend-item[data-cat="cardio"].active{border-color:var(--cardio)}
+
+/* ── CONTROLS ── */
+.controls{padding:1.2rem 1.5rem;max-width:1200px;margin:0 auto;display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
+.search-wrap input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Sora',sans-serif;font-size:0.85rem;padding:0.65rem 1rem 0.65rem 2.6rem;outline:none;transition:border-color 0.18s}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-wrap input:focus{border-color:rgba(56,189,248,0.4)}
+.urgency-filter{display:flex;gap:0.4rem;flex-wrap:wrap}
+.urg-btn{padding:0.5rem 0.75rem;border-radius:8px;font-size:0.7rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Sora',sans-serif;transition:all 0.18s;white-space:nowrap}
+.urg-btn:hover{border-color:var(--border-hover);color:var(--text)}
+.urg-btn.active-emergency{background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.35)}
+.urg-btn.active-clinic{background:rgba(245,158,11,0.1);color:#f59e0b;border-color:rgba(245,158,11,0.35)}
+.urg-btn.active-selfcare{background:rgba(16,185,129,0.1);color:#10b981;border-color:rgba(16,185,129,0.35)}
+.results-count{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;white-space:nowrap}
+
+/* ── DISEASE GRID ── */
+.grid-wrap{padding:0 1.5rem 4rem;max-width:1200px;margin:0 auto}
+.disease-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+@media(max-width:500px){.disease-grid{grid-template-columns:1fr}}
+.d-card{background:var(--card);padding:1.4rem;cursor:pointer;transition:background 0.18s;position:relative;overflow:hidden}
+.d-card:hover{background:var(--card-hover)}
+.d-card.hidden{display:none}
+.d-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;margin-bottom:1rem}
+.d-card-name{font-size:0.93rem;font-weight:600;color:var(--text);line-height:1.3}
+.d-card-cat{font-size:0.6rem;font-weight:500;padding:0.2rem 0.6rem;border-radius:100px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.cat-infectious .d-card-cat{background:var(--infectious-bg);color:var(--infectious)}
+.cat-gastro .d-card-cat{background:var(--gastro-bg);color:var(--gastro)}
+.cat-respiratory .d-card-cat{background:var(--respiratory-bg);color:var(--respiratory)}
+.cat-metabolic .d-card-cat{background:var(--metabolic-bg);color:var(--metabolic)}
+.cat-neuro .d-card-cat{background:var(--neuro-bg);color:var(--neuro)}
+.cat-cardio .d-card-cat{background:var(--cardio-bg);color:var(--cardio)}
+.d-card-accent{position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s}
+.d-card:hover .d-card-accent,.d-card.open .d-card-accent{opacity:1}
+.cat-infectious .d-card-accent{background:var(--infectious)}
+.cat-gastro .d-card-accent{background:var(--gastro)}
+.cat-respiratory .d-card-accent{background:var(--respiratory)}
+.cat-metabolic .d-card-accent{background:var(--metabolic)}
+.cat-neuro .d-card-accent{background:var(--neuro)}
+.cat-cardio .d-card-accent{background:var(--cardio)}
+.d-symptoms{display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:1rem}
+.d-sym{font-size:0.66rem;padding:0.18rem 0.5rem;border-radius:100px;background:rgba(148,163,184,0.06);border:1px solid var(--border);color:var(--muted)}
+.d-sym.key{background:rgba(148,163,184,0.12);color:#94a3b8;border-color:rgba(148,163,184,0.2)}
+.d-meta{display:flex;align-items:center;justify-content:space-between;padding-top:0.9rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:0.4rem}
+.d-urgency{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;font-weight:500}
+.d-urgency-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.urgency-emergency .d-urgency{color:var(--urgent-emergency)}
+.urgency-emergency .d-urgency-dot{background:var(--urgent-emergency)}
+.urgency-clinic .d-urgency{color:var(--urgent-clinic)}
+.urgency-clinic .d-urgency-dot{background:var(--urgent-clinic)}
+.urgency-selfcare .d-urgency{color:var(--urgent-selfcare)}
+.urgency-selfcare .d-urgency-dot{background:var(--urgent-selfcare)}
+.d-spread{font-size:0.66rem;color:var(--muted);max-width:55%;text-align:right}
+.d-expand{display:none;padding:0 0 0.5rem;animation:slideIn 0.2s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.d-card.open .d-expand{display:block}
+.d-expand-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:1rem}
+@media(max-width:420px){.d-expand-grid{grid-template-columns:1fr}}
+.d-expand-box{background:rgba(148,163,184,0.04);border:1px solid var(--border);border-radius:10px;padding:0.9rem}
+.d-expand-label{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem}
+.d-expand-val{font-size:0.78rem;color:var(--text);line-height:1.6}
+.d-ask-btn{
+  margin-top:0.8rem;width:100%;
+  padding:0.55rem;border-radius:8px;
+  background:var(--accent-bg);border:1px solid rgba(56,189,248,0.25);
+  color:var(--accent);font-family:'Sora',sans-serif;font-size:0.75rem;font-weight:500;
+  cursor:pointer;transition:all 0.18s;text-align:center;
+}
+.d-ask-btn:hover{background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.45)}
+.no-results{padding:4rem 2rem;text-align:center;color:var(--muted);font-size:0.9rem;display:none}
+.no-results.visible{display:block}
+
+/* ── OVERLAY (mobile) ── */
+.chat-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  z-index:149;
+}
+.chat-overlay.visible{display:block}
+
+/* ── CHAT PANEL ── */
+.chat-panel{
+  position:fixed;top:60px;right:0;bottom:0;
+  width:var(--chat-width);max-width:100vw;
+  background:var(--surface);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform 0.3s ease;
+  z-index:150;
+}
+.chat-panel.open{transform:translateX(0)}
+
+/* Mobile: full screen chat */
+@media(max-width:768px){
+  .chat-panel{
+    top:60px;left:0;right:0;
+    width:100%;border-left:none;
+    border-top:1px solid var(--border);
+  }
+}
+
+.chat-header{
+  padding:1rem 1.2rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.chat-header-left{display:flex;align-items:center;gap:0.8rem}
+.chat-header-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--accent-bg);border:1px solid rgba(56,189,248,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.chat-header-title{font-size:0.88rem;font-weight:600;color:var(--text)}
+.chat-header-sub{font-size:0.68rem;color:var(--muted)}
+.chat-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1;padding:4px;border-radius:6px;transition:color 0.15s}
+.chat-close:hover{color:var(--text)}
+
+.chat-messages{
+  flex:1;overflow-y:auto;padding:1.2rem;
+  display:flex;flex-direction:column;gap:1rem;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--subtle);border-radius:4px}
+
+.msg{display:flex;flex-direction:column;gap:0.3rem;animation:msgIn 0.22s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{align-items:flex-end}
+.msg-ai{align-items:flex-start}
+.msg-bubble{
+  max-width:88%;padding:0.75rem 1rem;
+  border-radius:14px;font-size:0.82rem;line-height:1.7;
+}
+.msg-user .msg-bubble{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.2);color:var(--text);border-bottom-right-radius:4px}
+.msg-ai .msg-bubble{background:var(--card);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg-time{font-size:0.6rem;color:var(--muted);font-family:'DM Mono',monospace;padding:0 4px}
+.msg-ai .msg-bubble strong{color:var(--accent);font-weight:600}
+.msg-ai .msg-bubble em{color:#94a3b8;font-style:normal;font-size:0.78rem}
+.msg-ai .msg-bubble .urgency-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;border-radius:100px;font-size:0.7rem;font-weight:500;margin:0.3rem 0;
+}
+.tag-emergency{background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
+.tag-clinic{background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
+.tag-selfcare{background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+
+/* Status bar */
+.chat-status{
+  padding:0.4rem 1.2rem;display:flex;align-items:center;gap:0.5rem;
+  font-size:0.68rem;color:var(--muted);font-family:'DM Mono',monospace;
+  border-bottom:1px solid var(--border);flex-shrink:0;
+  min-height:28px;
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--urgent-selfcare)}
+.status-dot.thinking{background:var(--accent);animation:blink 0.8s infinite}
+
+.disclaimer{
+  margin:0 1rem 0.6rem;padding:0.6rem 0.8rem;
+  background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);
+  border-radius:10px;font-size:0.68rem;color:#f59e0b;line-height:1.5;flex-shrink:0;
+}
+
+.chat-suggestions{padding:0 1rem 0.6rem;display:flex;flex-wrap:wrap;gap:0.4rem;flex-shrink:0}
+.suggestion-pill{
+  padding:0.28rem 0.7rem;border-radius:100px;
+  background:rgba(148,163,184,0.06);border:1px solid var(--border);
+  color:var(--muted);font-size:0.68rem;cursor:pointer;
+  transition:all 0.15s;white-space:nowrap;
+}
+.suggestion-pill:hover{background:var(--accent-bg);border-color:rgba(56,189,248,0.3);color:var(--accent)}
+
+.chat-input-area{
+  padding:0.8rem 1rem 1rem;border-top:1px solid var(--border);
+  display:flex;gap:0.6rem;align-items:flex-end;flex-shrink:0;
+}
+.chat-textarea{
+  flex:1;background:var(--card);border:1px solid var(--border);
+  border-radius:12px;color:var(--text);font-family:'Sora',sans-serif;
+  font-size:0.82rem;padding:0.65rem 0.9rem;outline:none;
+  resize:none;min-height:40px;max-height:120px;
+  line-height:1.5;transition:border-color 0.18s;
+  -webkit-appearance:none;
+}
+.chat-textarea::placeholder{color:var(--muted)}
+.chat-textarea:focus{border-color:rgba(56,189,248,0.4)}
+.chat-send{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:var(--accent);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.18s;color:#06080f;
+}
+.chat-send:hover{background:#7dd3fc;transform:scale(1.05)}
+.chat-send:disabled{background:var(--subtle);cursor:not-allowed;color:var(--muted);transform:none}
+.chat-send svg{width:16px;height:16px}
+
+/* Typing dots */
+.typing-dots{display:flex;gap:4px;padding:4px 2px}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:dot 1.2s infinite}
+.typing-dots span:nth-child(2){animation-delay:0.2s}
+.typing-dots span:nth-child(3){animation-delay:0.4s}
+@keyframes dot{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* Error state */
+.msg-bubble.error{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05);color:#fca5a5}
+
+/* ── PREDICTOR SECTION ── */
+.predictor-section{
+  padding:0 1.5rem 0;max-width:1200px;margin:1.5rem auto 0;
+}
+.predictor-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+}
+.predictor-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.4rem;border-bottom:1px solid var(--border);
+  cursor:pointer;user-select:none;
+  transition:background 0.15s;
+}
+.predictor-header:hover{background:var(--card-hover)}
+.predictor-header-left{display:flex;align-items:center;gap:0.7rem}
+.predictor-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;
+}
+.predictor-title{font-size:0.88rem;font-weight:600;color:var(--text)}
+.predictor-sub{font-size:0.68rem;color:var(--muted)}
+.predictor-toggle-arrow{
+  color:var(--muted);font-size:1rem;transition:transform 0.25s;
+}
+.predictor-card.open .predictor-toggle-arrow{transform:rotate(180deg)}
+.predictor-body{
+  display:none;padding:1.2rem 1.4rem;
+}
+.predictor-card.open .predictor-body{display:block}
+.predictor-hint{
+  font-size:0.72rem;color:var(--muted);margin-bottom:0.8rem;line-height:1.6;
+}
+.predictor-input-row{display:flex;gap:0.7rem;align-items:flex-end;flex-wrap:wrap}
+.predictor-textarea{
+  flex:1;min-width:200px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-family:'Sora',sans-serif;
+  font-size:0.83rem;padding:0.65rem 0.9rem;outline:none;
+  resize:none;height:70px;line-height:1.5;
+  transition:border-color 0.18s;
+}
+.predictor-textarea::placeholder{color:var(--muted)}
+.predictor-textarea:focus{border-color:rgba(139,92,246,0.5)}
+.predictor-run-btn{
+  padding:0.6rem 1.3rem;border-radius:10px;
+  background:linear-gradient(135deg,rgba(139,92,246,0.9),rgba(99,102,241,0.9));
+  border:none;color:#fff;font-family:'Sora',sans-serif;
+  font-size:0.8rem;font-weight:500;cursor:pointer;
+  transition:all 0.18s;white-space:nowrap;
+  display:flex;align-items:center;gap:0.4rem;height:40px;
+}
+.predictor-run-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.predictor-run-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.predictor-chips{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.7rem}
+.predictor-chip{
+  padding:0.22rem 0.65rem;border-radius:100px;
+  background:rgba(148,163,184,0.07);border:1px solid var(--border);
+  color:var(--muted);font-size:0.66rem;cursor:pointer;
+  transition:all 0.15s;
+}
+.predictor-chip:hover{background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.3);color:#a78bfa}
+.predictor-results{margin-top:1.1rem;display:flex;flex-direction:column;gap:0.7rem}
+.pred-result{
+  border-radius:12px;padding:1rem 1.2rem;
+  border:1px solid transparent;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  animation:msgIn 0.2s ease;
+}
+.pred-result.high{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.25)}
+.pred-result.medium{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.25)}
+.pred-result.low{background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.25)}
+.pred-result-left{flex:1;min-width:140px}
+.pred-result-name{font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:0.2rem}
+.pred-result-desc{font-size:0.7rem;color:var(--muted)}
+.pred-result-right{display:flex;align-items:center;gap:0.8rem;flex-shrink:0}
+.pred-bar-wrap{width:100px;height:6px;background:rgba(148,163,184,0.1);border-radius:100px;overflow:hidden}
+.pred-bar{height:100%;border-radius:100px;transition:width 0.6s ease}
+.pred-result.high .pred-bar{background:#ef4444}
+.pred-result.medium .pred-bar{background:#f59e0b}
+.pred-result.low .pred-bar{background:#10b981}
+.pred-pct{font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:500;min-width:36px;text-align:right}
+.pred-result.high .pred-pct{color:#ef4444}
+.pred-result.medium .pred-pct{color:#f59e0b}
+.pred-result.low .pred-pct{color:#10b981}
+.pred-urg-badge{
+  padding:0.2rem 0.6rem;border-radius:100px;font-size:0.65rem;font-weight:500;
+}
+.pred-result.high .pred-urg-badge{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
+.pred-result.medium .pred-urg-badge{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
+.pred-result.low .pred-urg-badge{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+.pred-ask-btn{
+  padding:0.25rem 0.7rem;border-radius:8px;font-size:0.68rem;
+  background:var(--accent-bg);border:1px solid rgba(56,189,248,0.25);
+  color:var(--accent);cursor:pointer;font-family:'Sora',sans-serif;
+  transition:all 0.15s;white-space:nowrap;
+}
+.pred-ask-btn:hover{background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.45)}
+.pred-no-match{
+  text-align:center;padding:1.5rem;
+  font-size:0.82rem;color:var(--muted);
+  background:rgba(148,163,184,0.04);border-radius:10px;border:1px dashed var(--border);
+}
+.predictor-disclaimer{
+  margin-top:0.8rem;font-size:0.67rem;color:var(--muted);
+  padding:0.5rem 0.7rem;border-radius:8px;
+  background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.15);
+  color:#f59e0b;line-height:1.5;
+}
+
+.footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--subtle);letter-spacing:0.06em;position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-brand-dot"></div>
+    <span>SBDPS · Disease Index</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-stats">
+      <div class="nav-stat"><div class="nav-stat-val">41</div><div class="nav-stat-label">Diseases</div></div>
+      <div class="nav-stat"><div class="nav-stat-val">132</div><div class="nav-stat-label">Symptoms</div></div>
+      <div class="nav-stat"><div class="nav-stat-val">6</div><div class="nav-stat-label">Categories</div></div>
+    </div>
+    <button class="chat-toggle-btn" id="chatToggle">
+      <div class="btn-dot"></div>
+      <span class="btn-label">AI Assistant</span>
+    </button>
+  </div>
+</nav>
+
+<!-- APP LAYOUT -->
+<div class="app-layout">
+  <div class="main-panel" id="mainPanel">
+
+    <div class="hero">
+      <div class="hero-eyebrow">Symptom-Based Disease Prediction System</div>
+      <h1>Disease<br><em>Encyclopedia</em></h1>
+      <p class="hero-desc">Complete reference for all 42 conditions covered by SBDPS — symptoms, urgency levels, transmission, and care guidance. Ask the AI assistant anything about any disease.</p>
+    </div>
+
+    <!-- SYMPTOM PREDICTOR -->
+    <div class="predictor-section">
+      <div class="predictor-card" id="predictorCard">
+        <div class="predictor-header" id="predictorHeader">
+          <div class="predictor-header-left">
+            <div class="predictor-icon">🧠</div>
+            <div>
+              <div class="predictor-title">Symptom Predictor</div>
+              <div class="predictor-sub">Rule-based engine · Hinglish supported</div>
+            </div>
+          </div>
+          <div class="predictor-toggle-arrow">▾</div>
+        </div>
+        <div class="predictor-body">
+          <div class="predictor-hint">Enter symptoms separated by commas. Supports English and Hinglish (e.g. <em>bukhar, chakkar, ulti, tension</em>).</div>
+          <div class="predictor-input-row">
+            <textarea class="predictor-textarea" id="predictorInput" placeholder="fever, headache, joint pain, rash..."></textarea>
+            <button class="predictor-run-btn" id="predictorRunBtn" onclick="runPredictor()">
+              <span>&#9679;</span> Analyze
+            </button>
+          </div>
+          <div class="predictor-chips" id="predictorChips">
+            <span class="predictor-chip" onclick="addSymptom('fever')">fever</span>
+            <span class="predictor-chip" onclick="addSymptom('headache')">headache</span>
+            <span class="predictor-chip" onclick="addSymptom('cough')">cough</span>
+            <span class="predictor-chip" onclick="addSymptom('chills')">chills</span>
+            <span class="predictor-chip" onclick="addSymptom('joint pain')">joint pain</span>
+            <span class="predictor-chip" onclick="addSymptom('rash')">rash</span>
+            <span class="predictor-chip" onclick="addSymptom('vomiting')">vomiting</span>
+            <span class="predictor-chip" onclick="addSymptom('fatigue')">fatigue</span>
+            <span class="predictor-chip" onclick="addSymptom('dizziness')">dizziness</span>
+            <span class="predictor-chip" onclick="addSymptom('anxiety')">anxiety</span>
+            <span class="predictor-chip" onclick="addSymptom('sadness')">sadness</span>
+            <span class="predictor-chip" onclick="addSymptom('bukhar')">bukhar</span>
+            <span class="predictor-chip" onclick="addSymptom('chakkar')">chakkar</span>
+            <span class="predictor-chip" onclick="addSymptom('tension')">tension</span>
+            <span class="predictor-chip" onclick="addSymptom('ulti')">ulti</span>
+          </div>
+          <div class="predictor-results" id="predictorResults"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item active" data-cat="all"><span class="legend-dot" style="background:#94a3b8"></span>All (41)</div>
+      <div class="legend-item" data-cat="infectious"><span class="legend-dot" style="background:var(--infectious)"></span>Infectious (11)</div>
+      <div class="legend-item" data-cat="gastro"><span class="legend-dot" style="background:var(--gastro)"></span>Gastro (6)</div>
+      <div class="legend-item" data-cat="respiratory"><span class="legend-dot" style="background:var(--respiratory)"></span>Respiratory (5)</div>
+      <div class="legend-item" data-cat="metabolic"><span class="legend-dot" style="background:var(--metabolic)"></span>Metabolic (5)</div>
+      <div class="legend-item" data-cat="neuro"><span class="legend-dot" style="background:var(--neuro)"></span>Neurological (8)</div>
+      <div class="legend-item" data-cat="cardio"><span class="legend-dot" style="background:var(--cardio)"></span>Cardiovascular (6)</div>
+    </div>
+
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="searchInput" placeholder="Search diseases or symptoms...">
+      </div>
+      <div class="urgency-filter">
+        <button class="urg-btn" data-urg="emergency">&#9679; Emergency</button>
+        <button class="urg-btn" data-urg="clinic">&#9679; Clinic</button>
+        <button class="urg-btn" data-urg="selfcare">&#9679; Self-care</button>
+      </div>
+      <div class="results-count" id="resultsCount">42 results</div>
+    </div>
+
+    <div class="grid-wrap">
+      <div class="disease-grid" id="diseaseGrid"></div>
+      <div class="no-results" id="noResults">No diseases match your search.</div>
+    </div>
+
+    <div class="footer">SBDPS Research · 41 diseases · 132 symptom indicators · 6 categories · AI powered by Claude</div>
+  </div>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="chat-overlay" id="chatOverlay"></div>
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="chat-header-icon">&#129657;</div>
+        <div>
+          <div class="chat-header-title">SBDPS AI Assistant</div>
+          <div class="chat-header-sub">Powered by Claude · Disease & symptom expert</div>
+        </div>
+      </div>
+      <button class="chat-close" id="chatClose">&times;</button>
+    </div>
+
+    <div class="chat-status" id="chatStatus">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Ready to help</span>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg msg-ai">
+        <div class="msg-bubble">
+          Hello! I'm the SBDPS AI assistant. I can help you with:<br><br>
+          <strong>✓ Symptom analysis</strong> — describe what you're feeling<br>
+          <strong>✓ Disease information</strong> — causes, symptoms, treatment<br>
+          <strong>✓ Urgency guidance</strong> — when to seek care<br>
+          <strong>✓ Prevention tips</strong> — how to stay healthy<br><br>
+          <em>⚠ Educational purposes only. Always consult a doctor for medical decisions.</em>
+        </div>
+        <div class="msg-time">Just now</div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠ Educational use only. Not a substitute for professional medical advice. In emergencies, call <strong>112</strong> immediately.
+    </div>
+
+    <div class="chat-suggestions" id="chatSuggestions">
+      <div class="suggestion-pill" onclick="sendSuggestion('What are symptoms of malaria?')">Malaria symptoms</div>
+      <div class="suggestion-pill" onclick="sendSuggestion('I have fever and cough, what could it be?')">Fever + cough</div>
+      <div class="suggestion-pill" onclick="sendSuggestion('How is dengue different from malaria?')">Dengue vs Malaria</div>
+      <div class="suggestion-pill" onclick="sendSuggestion('What diseases are most common in rural India?')">Common in India</div>
+      <div class="suggestion-pill" onclick="sendSuggestion('When should I go to emergency vs clinic?')">Emergency vs clinic</div>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea class="chat-textarea" id="chatInput" placeholder="Ask about any disease or symptom..." rows="1"></textarea>
+      <button class="chat-send" id="chatSend" title="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DISEASES = [
+  {name:"Malaria",cat:"infectious",catLabel:"Infectious",urgency:"emergency",spread:"Mosquito (Anopheles)",symptoms:["high fever","chills","sweating","headache","muscle pain","fatigue","nausea","vomiting"],keySym:[0,1,2],treatment:"Antimalarial drugs (chloroquine, artemisinin). Seek hospital care immediately.",prevention:"Mosquito nets, repellents, prophylactic medication."},
+  {name:"Dengue Fever",cat:"infectious",catLabel:"Infectious",urgency:"emergency",spread:"Mosquito (Aedes)",symptoms:["high fever","severe headache","eye pain","joint pain","muscle pain","rash","mild bleeding","fatigue"],keySym:[0,1,3],treatment:"Supportive care, fluids, pain relief. No specific antiviral. Avoid NSAIDs.",prevention:"Eliminate standing water, use mosquito repellent."},
+  {name:"Typhoid",cat:"infectious",catLabel:"Infectious",urgency:"emergency",spread:"Contaminated food/water",symptoms:["prolonged fever","weakness","abdominal pain","headache","loss of appetite","constipation or diarrhea","rash"],keySym:[0,1,2],treatment:"Antibiotics (ciprofloxacin, azithromycin). Hydration essential.",prevention:"Safe drinking water, hygiene, vaccination."},
+  {name:"Cholera",cat:"infectious",catLabel:"Infectious",urgency:"emergency",spread:"Contaminated water/food",symptoms:["profuse watery diarrhea","vomiting","leg cramps","dehydration","rapid heart rate"],keySym:[0,1,3],treatment:"Oral rehydration salts, IV fluids for severe cases, antibiotics.",prevention:"Safe water, sanitation, oral cholera vaccine."},
+  {name:"Tuberculosis",cat:"infectious",catLabel:"Infectious",urgency:"clinic",spread:"Airborne droplets",symptoms:["chronic cough","coughing blood","chest pain","weight loss","night sweats","fever","fatigue"],keySym:[0,1,3],treatment:"6-month antibiotic regimen. Medical supervision required.",prevention:"BCG vaccination, avoiding close contact with active TB patients."},
+  {name:"Hepatitis A",cat:"infectious",catLabel:"Infectious",urgency:"clinic",spread:"Contaminated food/water",symptoms:["jaundice","fatigue","abdominal pain","nausea","fever","dark urine","clay-colored stools"],keySym:[0,1,2],treatment:"Rest, fluids, avoid alcohol. Usually self-limiting.",prevention:"Hepatitis A vaccine, safe food and water practices."},
+  {name:"Hepatitis B",cat:"infectious",catLabel:"Infectious",urgency:"clinic",spread:"Blood / sexual contact / mother-to-child",symptoms:["jaundice","fatigue","abdominal pain","nausea","joint pain","dark urine","fever"],keySym:[0,1,3],treatment:"Antiviral drugs for chronic cases.",prevention:"Hepatitis B vaccination, safe sex, sterile needles."},
+  {name:"Chickenpox",cat:"infectious",catLabel:"Infectious",urgency:"selfcare",spread:"Airborne / Direct contact",symptoms:["itchy blister rash","fever","fatigue","headache","loss of appetite"],keySym:[0,1,2],treatment:"Calamine lotion, antihistamines, antiviral for at-risk groups.",prevention:"Varicella vaccine. Avoid contact with infected individuals."},
+  {name:"Leptospirosis",cat:"infectious",catLabel:"Infectious",urgency:"emergency",spread:"Animal urine / contaminated water",symptoms:["high fever","severe headache","muscle pain","chills","red eyes","abdominal pain","jaundice","rash"],keySym:[0,1,2],treatment:"Antibiotics (doxycycline, penicillin). ICU care for severe cases.",prevention:"Avoid flooding, wear protective gear."},
+  {name:"Pneumonia",cat:"infectious",catLabel:"Infectious",urgency:"emergency",spread:"Airborne / Droplets",symptoms:["cough with phlegm","fever","chills","shortness of breath","chest pain","fatigue","nausea"],keySym:[0,2,3],treatment:"Antibiotics (bacterial), antivirals (viral). Oxygen therapy if severe.",prevention:"Pneumococcal vaccine, flu vaccine, hand hygiene."},
+  {name:"Hepatitis C",cat:"infectious",catLabel:"Infectious",urgency:"clinic",spread:"Blood contact",symptoms:["fatigue","joint pain","abdominal pain","jaundice","dark urine","nausea","fever"],keySym:[0,2,3],treatment:"Direct-acting antiviral drugs — highly effective.",prevention:"Sterile needles, blood screening. No vaccine available."},
+  {name:"Gastroenteritis",cat:"gastro",catLabel:"Gastrointestinal",urgency:"selfcare",spread:"Contaminated food/water",symptoms:["diarrhea","nausea","vomiting","abdominal cramps","fever","headache","dehydration"],keySym:[0,1,2],treatment:"Oral rehydration salts, rest, bland diet.",prevention:"Hand washing, safe food preparation, clean water."},
+  {name:"Peptic Ulcer",cat:"gastro",catLabel:"Gastrointestinal",urgency:"clinic",spread:"H. pylori / NSAIDs",symptoms:["burning stomach pain","bloating","heartburn","nausea","dark stools","vomiting blood"],keySym:[0,1,4],treatment:"PPIs (omeprazole), antibiotics if H. pylori positive.",prevention:"Limit NSAIDs, avoid smoking and alcohol."},
+  {name:"Irritable Bowel Syndrome",cat:"gastro",catLabel:"Gastrointestinal",urgency:"selfcare",spread:"Non-communicable",symptoms:["abdominal pain","bloating","diarrhea","constipation","mucus in stool","gas"],keySym:[0,1,2],treatment:"Dietary changes, fiber, antispasmodics, stress management.",prevention:"Stress reduction, balanced diet, identify trigger foods."},
+  {name:"Jaundice",cat:"gastro",catLabel:"Gastrointestinal",urgency:"clinic",spread:"Varies by cause",symptoms:["yellow skin","yellow eyes","dark urine","pale stools","fatigue","itching","abdominal pain"],keySym:[0,1,2],treatment:"Treat underlying cause. Hydration.",prevention:"Hepatitis vaccination, avoid toxins, safe food and water."},
+  {name:"Appendicitis",cat:"gastro",catLabel:"Gastrointestinal",urgency:"emergency",spread:"Non-communicable",symptoms:["severe right lower abdominal pain","nausea","vomiting","fever","loss of appetite","rebound tenderness"],keySym:[0,3,4],treatment:"Surgical removal (appendectomy). Antibiotics for uncomplicated cases.",prevention:"No proven prevention. Early diagnosis is key."},
+  {name:"Acid Reflux (GERD)",cat:"gastro",catLabel:"Gastrointestinal",urgency:"selfcare",spread:"Non-communicable",symptoms:["heartburn","regurgitation","chest pain","difficulty swallowing","chronic cough","bloating"],keySym:[0,1,2],treatment:"Lifestyle changes, antacids, H2 blockers, PPIs.",prevention:"Avoid trigger foods, maintain healthy weight."},
+  {name:"Asthma",cat:"respiratory",catLabel:"Respiratory",urgency:"clinic",spread:"Non-communicable",symptoms:["wheezing","shortness of breath","chest tightness","coughing at night","difficulty breathing","rapid breathing"],keySym:[0,1,2],treatment:"Inhaled bronchodilators, inhaled corticosteroids. Avoid triggers.",prevention:"Avoid allergens, air pollution, tobacco smoke."},
+  {name:"COPD",cat:"respiratory",catLabel:"Respiratory",urgency:"clinic",spread:"Non-communicable",symptoms:["chronic cough","shortness of breath","wheezing","chest tightness","frequent infections","fatigue","cyanosis"],keySym:[0,1,2],treatment:"Bronchodilators, steroids, pulmonary rehab, oxygen therapy.",prevention:"Quit smoking, reduce air pollution exposure."},
+  {name:"Bronchitis",cat:"respiratory",catLabel:"Respiratory",urgency:"selfcare",spread:"Viral / bacterial",symptoms:["persistent cough","mucus production","shortness of breath","slight fever","chest discomfort","fatigue","sore throat"],keySym:[0,1,3],treatment:"Rest, fluids, humidifier. Antibiotics only if bacterial.",prevention:"Avoid smoking, flu vaccination, hand hygiene."},
+  {name:"Sinusitis",cat:"respiratory",catLabel:"Respiratory",urgency:"selfcare",spread:"Viral / bacterial",symptoms:["facial pain","nasal congestion","headache","loss of smell","cough","fever","post-nasal drip"],keySym:[0,1,2],treatment:"Nasal irrigation, decongestants, antibiotics if bacterial.",prevention:"Treat allergies, humidify air, nasal irrigation."},
+  {name:"Allergic Rhinitis",cat:"respiratory",catLabel:"Respiratory",urgency:"selfcare",spread:"Non-communicable",symptoms:["sneezing","runny nose","itchy eyes","nasal congestion","watery eyes","post-nasal drip","coughing"],keySym:[0,1,2],treatment:"Antihistamines, nasal steroids, immunotherapy.",prevention:"Avoid allergens, air purifiers."},
+  {name:"Type 2 Diabetes",cat:"metabolic",catLabel:"Metabolic",urgency:"clinic",spread:"Non-communicable",symptoms:["increased thirst","frequent urination","fatigue","blurred vision","slow healing wounds","tingling in feet","weight loss"],keySym:[0,1,2],treatment:"Metformin, lifestyle changes, diet control, insulin if needed.",prevention:"Healthy diet, exercise, maintain healthy weight."},
+  {name:"Hypertension",cat:"metabolic",catLabel:"Metabolic",urgency:"clinic",spread:"Non-communicable",symptoms:["headache","dizziness","shortness of breath","chest pain","blurred vision","nosebleeds","palpitations"],keySym:[0,1,4],treatment:"Lifestyle changes, ACE inhibitors, beta-blockers, diuretics.",prevention:"Low-sodium diet, exercise, reduce stress, limit alcohol."},
+  {name:"Hypothyroidism",cat:"metabolic",catLabel:"Metabolic",urgency:"clinic",spread:"Non-communicable",symptoms:["fatigue","weight gain","cold intolerance","constipation","dry skin","hair thinning","depression","slow heart rate"],keySym:[0,1,2],treatment:"Levothyroxine daily. Monitor TSH levels regularly.",prevention:"Adequate iodine intake. Regular thyroid screening if at risk."},
+  {name:"Hyperthyroidism",cat:"metabolic",catLabel:"Metabolic",urgency:"clinic",spread:"Non-communicable",symptoms:["weight loss","rapid heartbeat","sweating","nervousness","tremors","heat intolerance","frequent bowel movements","fatigue"],keySym:[0,1,2],treatment:"Anti-thyroid drugs, radioactive iodine, beta-blockers.",prevention:"No specific prevention. Regular thyroid checks if family history."},
+  {name:"Anaemia",cat:"metabolic",catLabel:"Metabolic",urgency:"clinic",spread:"Non-communicable",symptoms:["fatigue","weakness","pale skin","shortness of breath","dizziness","cold hands","headache","brittle nails"],keySym:[0,1,2],treatment:"Iron supplements, B12/folate if deficient, treat underlying cause.",prevention:"Iron-rich diet, folate intake, regular screening."},
+  {name:"Migraine",cat:"neuro",catLabel:"Neurological",urgency:"selfcare",spread:"Non-communicable",symptoms:["severe headache","nausea","vomiting","sensitivity to light","sensitivity to sound","visual aura","dizziness","throbbing pain"],keySym:[0,2,3],treatment:"Triptans, NSAIDs, anti-nausea medication. Dark quiet room.",prevention:"Identify and avoid triggers, preventive medications."},
+  {name:"Vertigo",cat:"neuro",catLabel:"Neurological",urgency:"clinic",spread:"Non-communicable",symptoms:["spinning sensation","dizziness","nausea","vomiting","balance problems","hearing changes","tinnitus","eye movement abnormality"],keySym:[0,1,4],treatment:"Epley manoeuvre, vestibular suppressants, physiotherapy.",prevention:"Avoid rapid head movements, treat ear infections promptly."},
+  {name:"Epilepsy",cat:"neuro",catLabel:"Neurological",urgency:"emergency",spread:"Non-communicable",symptoms:["recurrent seizures","temporary confusion","staring spells","uncontrolled jerking","loss of consciousness","anxiety before seizure","memory gaps"],keySym:[0,2,5],treatment:"Anti-epileptic drugs. Surgery for drug-resistant cases.",prevention:"Head injury prevention, prompt treatment of brain infections."},
+  {name:"Cervical Spondylosis",cat:"neuro",catLabel:"Neurological",urgency:"selfcare",spread:"Non-communicable (age-related)",symptoms:["neck pain","stiffness","headache at back of head","arm weakness","numbness in hands","grinding sensation","dizziness"],keySym:[0,1,5],treatment:"Physical therapy, pain relief (NSAIDs), cervical collar.",prevention:"Good posture, regular neck exercises, ergonomic workspace."},
+  {name:"Osteoarthritis",cat:"neuro",catLabel:"Neurological",urgency:"selfcare",spread:"Non-communicable (wear and tear)",symptoms:["joint pain","stiffness","swelling","reduced range of motion","grating sensation","tenderness","muscle weakness"],keySym:[0,1,3],treatment:"Weight management, physiotherapy, NSAIDs, joint replacement if severe.",prevention:"Maintain healthy weight, low-impact exercise."},
+  {name:"Paralysis (Stroke)",cat:"neuro",catLabel:"Neurological",urgency:"emergency",spread:"Non-communicable",symptoms:["sudden weakness on one side","facial drooping","slurred speech","vision loss","severe headache","loss of balance","confusion"],keySym:[0,1,2],treatment:"Thrombolytics (ischemic), surgery (hemorrhagic). Call 112 immediately.",prevention:"Control BP and diabetes, no smoking, healthy lifestyle."},
+  {name:"Kala-Azar",cat:"neuro",catLabel:"Neurological",urgency:"emergency",spread:"Sandfly bite",symptoms:["prolonged fever","weight loss","enlarged spleen","enlarged liver","weakness","darkening of skin","anaemia"],keySym:[0,1,2],treatment:"Liposomal amphotericin B, miltefosine. Requires specialist care.",prevention:"Insecticide-treated nets, sand fly control."},
+  {name:"Japanese Encephalitis",cat:"neuro",catLabel:"Neurological",urgency:"emergency",spread:"Mosquito (Culex)",symptoms:["high fever","headache","neck stiffness","disorientation","coma","tremors","seizures","weakness"],keySym:[0,1,2],treatment:"Supportive care only. Intensive care.",prevention:"JE vaccine, mosquito control."},
+  {name:"Heart Disease (CAD)",cat:"cardio",catLabel:"Cardiovascular",urgency:"emergency",spread:"Non-communicable",symptoms:["chest pain","shortness of breath","fatigue","palpitations","swelling in legs","dizziness","sweating"],keySym:[0,1,3],treatment:"Medications (statins, beta-blockers), angioplasty, bypass surgery.",prevention:"Heart-healthy diet, exercise, no smoking, control BP and cholesterol."},
+  {name:"Myocardial Infarction",cat:"cardio",catLabel:"Cardiovascular",urgency:"emergency",spread:"Non-communicable",symptoms:["crushing chest pain","arm pain","jaw pain","shortness of breath","sweating","nausea","sudden dizziness","cold sweat"],keySym:[0,1,2],treatment:"Aspirin immediately, call 112. PCI (stenting) or thrombolytics within hours.",prevention:"Control risk factors (BP, cholesterol, diabetes), healthy lifestyle."},
+  {name:"Heart Failure",cat:"cardio",catLabel:"Cardiovascular",urgency:"emergency",spread:"Non-communicable",symptoms:["shortness of breath","swollen legs","fatigue","rapid heartbeat","persistent cough","weight gain from fluid","reduced exercise tolerance"],keySym:[0,1,3],treatment:"ACE inhibitors, beta-blockers, diuretics, device therapy.",prevention:"Control underlying conditions, healthy lifestyle."},
+  {name:"Atrial Fibrillation",cat:"cardio",catLabel:"Cardiovascular",urgency:"clinic",spread:"Non-communicable",symptoms:["irregular heartbeat","palpitations","shortness of breath","fatigue","dizziness","chest pain","fainting"],keySym:[0,1,3],treatment:"Rate/rhythm control drugs, anticoagulants, cardioversion, ablation.",prevention:"Treat underlying heart disease, reduce alcohol, manage stress."},
+  {name:"Rheumatic Heart Disease",cat:"cardio",catLabel:"Cardiovascular",urgency:"clinic",spread:"Streptococcal throat infection",symptoms:["joint pain","fever","chest pain","shortness of breath","fatigue","heart murmur","skin rash"],keySym:[2,3,5],treatment:"Penicillin prophylaxis, heart valve repair/replacement.",prevention:"Prompt antibiotic treatment of strep throat in children."},
+  {name:"Deep Vein Thrombosis",cat:"cardio",catLabel:"Cardiovascular",urgency:"emergency",spread:"Non-communicable",symptoms:["leg pain or tenderness","swelling in leg","red or discolored skin","warmth in leg","leg cramps","difficulty walking"],keySym:[0,1,2],treatment:"Anticoagulants. Compression stockings.",prevention:"Avoid prolonged sitting, regular movement, compression stockings."}
+];
+
+const urgencyLabel = {emergency:'Emergency',clinic:'Visit clinic',selfcare:'Self-care'};
+let activeCategory='all', activeUrgency=null, searchQuery='';
+
+function buildCards(){
+  const grid = document.getElementById('diseaseGrid');
+  grid.innerHTML='';
+  DISEASES.forEach((d,i)=>{
+    const card = document.createElement('div');
+    card.className=`d-card cat-${d.cat} urgency-${d.urgency}`;
+    card.dataset.idx=i; card.dataset.cat=d.cat; card.dataset.urgency=d.urgency;
+    card.dataset.search=[d.name,...d.symptoms].join(' ').toLowerCase();
+    const symPills=d.symptoms.map((s,si)=>`<span class="d-sym${d.keySym.includes(si)?' key':''}">${s}</span>`).join('');
+    card.innerHTML=`
+      <div class="d-card-accent"></div>
+      <div class="d-card-top">
+        <div class="d-card-name">${d.name}</div>
+        <div class="d-card-cat">${d.catLabel}</div>
+      </div>
+      <div class="d-symptoms">${symPills}</div>
+      <div class="d-meta">
+        <div class="d-urgency"><div class="d-urgency-dot"></div>${urgencyLabel[d.urgency]}</div>
+        <div class="d-spread">${d.spread}</div>
+      </div>
+      <div class="d-expand">
+        <div class="d-expand-grid">
+          <div class="d-expand-box"><div class="d-expand-label">Treatment</div><div class="d-expand-val">${d.treatment}</div></div>
+          <div class="d-expand-box"><div class="d-expand-label">Prevention</div><div class="d-expand-val">${d.prevention}</div></div>
+        </div>
+        <button class="d-ask-btn" onclick="askAboutDisease('${d.name.replace(/'/g,"\\'")}',event)">&#129657; Ask AI about ${d.name}</button>
+      </div>`;
+    card.addEventListener('click',e=>{
+      if(e.target.classList.contains('d-ask-btn')||e.target.closest('.d-ask-btn')) return;
+      const wasOpen=card.classList.contains('open');
+      document.querySelectorAll('.d-card.open').forEach(c=>c.classList.remove('open'));
+      if(!wasOpen) card.classList.add('open');
+    });
+    grid.appendChild(card);
+  });
+}
+
+function applyFilters(){
+  const cards=document.querySelectorAll('.d-card');
+  let visible=0;
+  cards.forEach(c=>{
+    const catMatch=activeCategory==='all'||c.dataset.cat===activeCategory;
+    const urgMatch=!activeUrgency||c.dataset.urgency===activeUrgency;
+    const searchMatch=!searchQuery||c.dataset.search.includes(searchQuery);
+    if(catMatch&&urgMatch&&searchMatch){c.classList.remove('hidden');visible++;}
+    else c.classList.add('hidden');
+  });
+  document.getElementById('resultsCount').textContent=visible+' result'+(visible!==1?'s':'');
+  document.getElementById('noResults').classList.toggle('visible',visible===0);
+}
+
+buildCards(); applyFilters();
+
+document.querySelectorAll('.legend-item').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.legend-item').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    activeCategory=el.dataset.cat;
+    applyFilters();
+  });
+});
+document.querySelectorAll('.urg-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const u=btn.dataset.urg;
+    if(activeUrgency===u){activeUrgency=null;btn.className='urg-btn';}
+    else{activeUrgency=u;document.querySelectorAll('.urg-btn').forEach(b=>b.className='urg-btn');btn.classList.add('active-'+u);}
+    applyFilters();
+  });
+});
+document.getElementById('searchInput').addEventListener('input',e=>{
+  searchQuery=e.target.value.trim().toLowerCase();
+  applyFilters();
+});
+
+/* ── CHAT ── */
+const chatPanel = document.getElementById('chatPanel');
+const mainPanel = document.getElementById('mainPanel');
+const chatOverlay = document.getElementById('chatOverlay');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+let chatHistory = [];
+let isStreaming = false;
+const isMobile = () => window.innerWidth <= 768;
+
+function openChat(){
+  chatPanel.classList.add('open');
+  if(isMobile()){
+    chatOverlay.classList.add('visible');
+    document.body.style.overflow='hidden';
+  } else {
+    mainPanel.classList.add('chat-open');
+  }
+  setTimeout(()=>{ chatInput.focus(); }, 350);
+}
+function closeChat(){
+  chatPanel.classList.remove('open');
+  chatOverlay.classList.remove('visible');
+  mainPanel.classList.remove('chat-open');
+  document.body.style.overflow='';
+}
+
+document.getElementById('chatToggle').addEventListener('click', ()=>{
+  chatPanel.classList.contains('open') ? closeChat() : openChat();
+});
+document.getElementById('chatClose').addEventListener('click', closeChat);
+chatOverlay.addEventListener('click', closeChat);
+
+function setStatus(thinking, text){
+  statusDot.className = 'status-dot' + (thinking ? ' thinking' : '');
+  statusText.textContent = text;
+}
+
+function getTime(){
+  const d=new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+
+function appendMessage(role, content, isTyping=false){
+  const div=document.createElement('div');
+  div.className=`msg msg-${role}`;
+  const bubble=document.createElement('div');
+  bubble.className='msg-bubble';
+  if(isTyping){
+    bubble.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
+  } else {
+    bubble.innerHTML = formatMessage(content);
+  }
+  const time=document.createElement('div');
+  time.className='msg-time';
+  time.textContent=getTime();
+  div.appendChild(bubble);
+  div.appendChild(time);
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop=chatMessages.scrollHeight;
+  return {div, bubble};
+}
+
+function formatMessage(text){
+  // Bold
+  text = text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  // Italic
+  text = text.replace(/\*([^*]+?)\*/g,'<em>$1</em>');
+  // Urgency tags
+  text = text.replace(/(?:🚨\s*)?Emergency(?:\s*care)?/g,'<span class="urgency-tag tag-emergency">● Emergency</span>');
+  text = text.replace(/(?:🟡\s*)?Visit\s*Clinic/gi,'<span class="urgency-tag tag-clinic">● Visit Clinic</span>');
+  text = text.replace(/(?:🟢\s*)?Self-?[Cc]are/g,'<span class="urgency-tag tag-selfcare">● Self-Care</span>');
+  // Lists
+  text = text.replace(/\n- /g,'<br>• ');
+  text = text.replace(/\n(\d+)\. /g,(m,n)=>`<br>${n}. `);
+  // Newlines
+  text = text.replace(/\n\n/g,'<br><br>');
+  text = text.replace(/\n/g,'<br>');
+  return text;
+}
+
+// Build SBDPS disease context for Claude
+const diseaseContext = DISEASES.map(d=>
+  `${d.name} (${d.catLabel}): symptoms=[${d.symptoms.join(', ')}], urgency=${d.urgency}, spread=${d.spread}, treatment=${d.treatment}, prevention=${d.prevention}`
+).join('\n');
+
+const SYSTEM_PROMPT = `You are an expert medical AI assistant for SBDPS (Symptom-Based Disease Prediction System), a health information platform designed for users in India.
+
+You have comprehensive knowledge of these 42 diseases in the SBDPS database:
+${diseaseContext}
+
+RESPONSE GUIDELINES:
+- Be clear, helpful, empathetic, and practical.
+- Always classify urgency using: **Emergency**, **Visit Clinic**, or **Self-Care** (with asterisks for bold).
+- For emergencies, always advise calling **112** (India's emergency number).
+- Mention Indian health resources when relevant: Ayushman Bharat helpline **14555**, e-Sanjeevani telemedicine (esanjeevan.mohfw.gov.in).
+- Use **bold** for key terms, disease names, and important advice.
+- For symptom-based queries, suggest the 2–3 most likely matching diseases from the database, clearly noting you cannot diagnose definitively.
+- Keep responses focused (under 220 words unless depth is genuinely needed).
+- Always end symptom analysis with: "*Please consult a qualified doctor for proper diagnosis and treatment.*"
+- For non-medical questions, politely redirect to health topics you can help with.
+- Never recommend specific dosages. Never claim to diagnose.
+- Be warm and reassuring while being accurate.`;
+
+async function sendMessage(userText){
+  if(!userText.trim() || isStreaming) return;
+  isStreaming = true;
+  chatSend.disabled = true;
+  document.getElementById('chatSuggestions').style.display = 'none';
+
+  appendMessage('user', userText);
+  chatHistory.push({role:'user', content: userText});
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  setStatus(true, 'AI is thinking...');
+
+  const {div: typingDiv} = appendMessage('ai', '', true);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: chatHistory
+      })
+    });
+
+    if(!response.ok){
+      const errData = await response.json().catch(()=>({}));
+      throw new Error(errData.error?.message || `API error ${response.status}`);
+    }
+
+    const data = await response.json();
+    const aiText = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
+
+    typingDiv.remove();
+
+    if(!aiText.trim()) throw new Error('Empty response from AI');
+
+    appendMessage('ai', aiText);
+    chatHistory.push({role:'assistant', content: aiText});
+    setStatus(false, 'Ready to help');
+
+  } catch(err) {
+    typingDiv.remove();
+    const errMsg = err.message.includes('Failed to fetch')
+      ? 'Unable to connect to AI. Please check your connection and try again.'
+      : `Error: ${err.message}. Please try again.`;
+    const {bubble} = appendMessage('ai', errMsg);
+    bubble.classList.add('error');
+    setStatus(false, 'Connection error — try again');
+    console.error('Claude API error:', err);
+  }
+
+  isStreaming = false;
+  chatSend.disabled = false;
+}
+
+function sendSuggestion(text){
+  openChat();
+  setTimeout(()=>sendMessage(text), 100);
+}
+
+function askAboutDisease(name, event){
+  if(event) event.stopPropagation();
+  openChat();
+  const msg = `Tell me everything about ${name} — symptoms, how serious it is, treatment options, and how to prevent it.`;
+  setTimeout(()=>sendMessage(msg), 150);
+}
+
+chatSend.addEventListener('click', ()=>sendMessage(chatInput.value));
+chatInput.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendMessage(chatInput.value);
+  }
+});
+chatInput.addEventListener('input', ()=>{
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+});
+
+// ── PREDICTOR ENGINE (ported from Flask backend) ──────────────────────────
+// Exact replica of DISEASE_RULES from backend
+const DISEASE_RULES = {
+  // Infectious
+  "Dengue":           { "fever":2, "headache":2, "joint pain":3, "rash":2, "vomiting":1 },
+  "Malaria":          { "fever":3, "chills":3, "sweating":2, "body pain":1 },
+  "Typhoid":          { "fever":3, "abdominal pain":3, "weakness":2, "vomiting":2 },
+  // Neurological / Mental
+  "Anxiety Disorder": { "anxiety":3, "stress":3, "restlessness":2 },
+  "Panic Attack":     { "anxiety":3, "breath":2, "unable to stand":3, "dizziness":2 },
+  "Depression":       { "sadness":3, "fatigue":2, "loss of interest":3 },
+  // General
+  "Anemia":           { "fatigue":3, "weakness":3, "dizziness":2 },
+};
+
+// Exact replica of NORMALIZATION mapping
+const NORMALIZATION = {
+  "tension":   "stress",
+  "ghabrahat": "anxiety",
+  "chakkar":   "dizziness",
+  "bukhar":    "fever",
+  "zukh am":  "fever",
+  "zukh":     "fever",
+  "pet dard":  "abdominal pain",
+  "ulti":      "vomiting",
+};
+
+function normalizeSymptoms(text) {
+  text = text.toLowerCase();
+  // Sort by length descending so longer phrases match first (e.g. "zukh am" before "zukh")
+  const keys = Object.keys(NORMALIZATION).sort((a,b) => b.length - a.length);
+  for (const k of keys) {
+    text = text.split(k).join(NORMALIZATION[k]);
+  }
+  return text;
+}
+
+function predictDisease(symptomsText) {
+  symptomsText = normalizeSymptoms(symptomsText);
+  const symptoms = symptomsText.split(',').map(s => s.trim()).filter(Boolean);
+
+  const scores = {};
+  for (const [disease, rules] of Object.entries(DISEASE_RULES)) {
+    let score = 0;
+    const maxScore = Object.values(rules).reduce((a,b)=>a+b, 0);
+    for (const symptom of symptoms) {
+      if (rules[symptom] !== undefined) score += rules[symptom];
+    }
+    if (score > 0) {
+      scores[disease] = Math.round((score / maxScore) * 10000) / 100;
+    }
+  }
+
+  const sorted = Object.entries(scores)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0, 3);
+
+  return sorted.map(([disease, confidence]) => ({
+    disease,
+    confidence,
+    urgency: confidence > 60 ? "High" : confidence > 30 ? "Medium" : "Low",
+    description: "Prediction based on symptom matching"
+  }));
+}
+
+// UI helpers
+document.getElementById('predictorHeader').addEventListener('click', () => {
+  document.getElementById('predictorCard').classList.toggle('open');
+});
+
+function addSymptom(sym) {
+  const inp = document.getElementById('predictorInput');
+  const cur = inp.value.trim();
+  if (!cur) { inp.value = sym; }
+  else {
+    const existing = cur.split(',').map(s=>s.trim());
+    if (!existing.includes(sym)) inp.value = cur + ', ' + sym;
+  }
+  inp.focus();
+}
+
+function runPredictor() {
+  const inp = document.getElementById('predictorInput');
+  const text = inp.value.trim();
+  const resultsDiv = document.getElementById('predictorResults');
+
+  if (!text) {
+    resultsDiv.innerHTML = '<div class="pred-no-match">Please enter at least one symptom.</div>';
+    return;
+  }
+
+  const results = predictDisease(text);
+  resultsDiv.innerHTML = '';
+
+  if (results.length === 0) {
+    resultsDiv.innerHTML = `
+      <div class="pred-no-match">
+        No strong match found. Try adding more symptoms, or use different keywords.<br>
+        <span style="font-size:0.68rem;margin-top:0.4rem;display:block">Tip: try Hinglish words like <em>bukhar, chakkar, ulti, tension</em></span>
+      </div>`;
+    return;
+  }
+
+  for (const item of results) {
+    const cls = item.urgency.toLowerCase();
+    const urgLabel = item.urgency === 'High' ? '⚠ High Urgency' : item.urgency === 'Medium' ? '○ Medium' : '● Low';
+    const row = document.createElement('div');
+    row.className = `pred-result ${cls}`;
+    row.innerHTML = `
+      <div class="pred-result-left">
+        <div class="pred-result-name">${item.disease}</div>
+        <div class="pred-result-desc">${item.description}</div>
+      </div>
+      <div class="pred-result-right">
+        <div class="pred-bar-wrap"><div class="pred-bar" style="width:${item.confidence}%"></div></div>
+        <div class="pred-pct">${item.confidence}%</div>
+        <div class="pred-urg-badge">${urgLabel}</div>
+        <button class="pred-ask-btn" onclick="askAboutDisease('${item.disease.replace(/'/g,"\\'")}',null)">Ask AI ↗</button>
+      </div>`;
+    resultsDiv.appendChild(row);
+  }
+
+  // Disclaimer
+  const disc = document.createElement('div');
+  disc.className = 'predictor-disclaimer';
+  disc.textContent = '⚠ These predictions are based on symptom matching only and are not a medical diagnosis. Please consult a qualified doctor.';
+  resultsDiv.appendChild(disc);
+}
+
+// Allow Enter key in predictor textarea
+document.getElementById('predictorInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runPredictor(); }
+});
+
+// ── END PREDICTOR ENGINE ──────────────────────────────────────────────────
+
+// Handle window resize
+window.addEventListener('resize', ()=>{
+  if(!isMobile() && chatPanel.classList.contains('open')){
+    chatOverlay.classList.remove('visible');
+    document.body.style.overflow = '';
+    mainPanel.classList.add('chat-open');
+  }
+});
+</script>
+</body>
+</html>
